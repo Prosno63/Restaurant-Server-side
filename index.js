@@ -167,6 +167,21 @@ async function run() {
             res.send(result);
         })
 
+        app.post('/menu', verifyToken, verifyAdmin, async(req, res)=>{
+            const item = req.body;
+            const result = await menuCollection.insertOne(item);
+            res.send(result);
+        });
+
+        app.delete('/menu/:id', verifyToken, verifyAdmin, async(req, res) => {
+            const id = req.params.id;
+            console.log(id);
+            const query = { _id: id };
+            const result = await menuCollection.deleteOne(query);
+            console.log(result);
+            res.send(result);
+        });
+
         app.get('/reviews', async(req, res)=>{
             const result = await reviewCollection.find().toArray();
             res.send(result);
@@ -181,9 +196,9 @@ async function run() {
             const query = {email: email};
             const result = await cartCollection.find(query).toArray();
             res.send(result);
-        })
+        });
 
-        app.delete('/carts/:id', async(req, res)=>{
+        app.delete('/carts/:id',verifyToken, async(req, res)=>{
             const id = req.params.id;
             const query = {_id: new ObjectId(id)}
             const result = await cartCollection.deleteOne(query);
